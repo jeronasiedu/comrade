@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:snapplant/translate/translations.dart';
 
 class Remedy extends StatefulWidget {
@@ -17,6 +18,9 @@ class _RemedyState extends State<Remedy> {
   Map currentTranslation = EnglishTranslations;
   String healthyText = healthyTextEnglish;
   String buttonText = "Translate to Twi";
+
+  // audio player
+  final player = AudioPlayer();
 
   void changeTranslation() {
     setState(() {
@@ -40,6 +44,32 @@ class _RemedyState extends State<Remedy> {
         buttonText = "Translate to Twi";
       }
     });
+  }
+
+  void playHealthy() async {
+    try {
+      await player.setAsset('assets/healthy.mp3');
+      await player.play();
+    } on PlayerException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error playing audio ${e.message}"),
+        ),
+      );
+    }
+  }
+
+  void playUnHealthy() async {
+    try {
+      await player.setAsset('assets/early-blight.mp3');
+      await player.play();
+    } on PlayerException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error playing audio ${e.message}"),
+        ),
+      );
+    }
   }
 
   @override
@@ -71,6 +101,15 @@ class _RemedyState extends State<Remedy> {
                     onPressed: changeTextToTwi,
                     style: btnStyle,
                     child: Text(buttonText),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: ElevatedButton.icon(
+                    onPressed: playHealthy,
+                    style: btnStyle,
+                    label: Text("Play in Twi"),
+                    icon: Icon(Icons.play_arrow),
                   ),
                 ),
               ],
@@ -118,6 +157,15 @@ class _RemedyState extends State<Remedy> {
                   onPressed: changeTranslation,
                   style: btnStyle,
                   child: Text(buttonText),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: ElevatedButton.icon(
+                  onPressed: playUnHealthy,
+                  style: btnStyle,
+                  label: Text("Play in Twi"),
+                  icon: Icon(Icons.play_arrow),
                 ),
               ),
             ],

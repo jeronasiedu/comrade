@@ -14,8 +14,8 @@ dependencies:
   lottie:
   image_picker: ^0.8.5+3
   dio: ^4.0.6
-
   cupertino_icons: ^1.0.2
+  just_audio: ^0.9.29
 
 dev_dependencies:
   flutter_test:
