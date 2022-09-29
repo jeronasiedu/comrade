@@ -18,6 +18,7 @@ class _RemedyState extends State<Remedy> {
   Map currentTranslation = EnglishTranslations;
   String healthyText = healthyTextEnglish;
   String buttonText = "Translate to Twi";
+  bool isPlaying = false;
 
   // audio player
   final player = AudioPlayer();
@@ -46,23 +47,20 @@ class _RemedyState extends State<Remedy> {
     });
   }
 
-  void playHealthy() async {
+  void playAudio(type) async {
+    late String audioUrl;
+    if (type == "late blight") {
+      audioUrl = lateBlightAudio;
+    } else if (type == "early blight") {
+      audioUrl = earlyBlightAudio;
+    } else
+      audioUrl = healthyAudio;
     try {
-      await player.setAsset('assets/healthy.mp3');
+      await player.setAsset(audioUrl);
       await player.play();
-    } on PlayerException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Error playing audio ${e.message}"),
-        ),
-      );
-    }
-  }
-
-  void playUnHealthy() async {
-    try {
-      await player.setAsset('assets/early-blight.mp3');
-      await player.play();
+      setState(() {
+        isPlaying = true;
+      });
     } on PlayerException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -80,7 +78,7 @@ class _RemedyState extends State<Remedy> {
         horizontal: 15,
         vertical: 10,
       ),
-      fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 40),
+      minimumSize: Size(MediaQuery.of(context).size.width * 0.9, 40),
       shape: const StadiumBorder(),
       elevation: 0,
     );
@@ -106,10 +104,14 @@ class _RemedyState extends State<Remedy> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: ElevatedButton.icon(
-                    onPressed: playHealthy,
+                    onPressed: () {
+                      playAudio(widget.lowercaseType);
+                    },
                     style: btnStyle,
                     label: Text("Play in Twi"),
-                    icon: Icon(Icons.play_arrow),
+                    icon: Icon(
+                      Icons.play_arrow,
+                    ),
                   ),
                 ),
               ],
@@ -162,10 +164,14 @@ class _RemedyState extends State<Remedy> {
               Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: ElevatedButton.icon(
-                  onPressed: playUnHealthy,
+                  onPressed: () {
+                    playAudio(widget.lowercaseType);
+                  },
                   style: btnStyle,
                   label: Text("Play in Twi"),
-                  icon: Icon(Icons.play_arrow),
+                  icon: Icon(
+                    Icons.play_arrow,
+                  ),
                 ),
               ),
             ],
